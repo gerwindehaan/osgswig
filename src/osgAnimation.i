@@ -31,6 +31,9 @@
 #include <osgAnimation/Interpolator>
 #include <osgAnimation/Keyframe>
 #include <osgAnimation/LinkVisitor>
+#include <osgAnimation/RigTransform>
+#include <osgAnimation/RigTransformSoftware>
+#include <osgAnimation/RigTransformHardware>
 #include <osgAnimation/RigGeometry>
 #include <osgAnimation/RigTransform>
 #include <osgAnimation/Sampler>
@@ -125,12 +128,6 @@ typedef osgAnimation::TemplateKeyframeContainer<osg::Matrixf>                   
 %include osgAnimation/CubicBezier
 %include osgAnimation/EaseMotion
 %include osgAnimation/Skeleton
-%include osgAnimation/RigGeometry
-%include osgAnimation/LinkVisitor
-%include osgAnimation/AnimationManagerBase
-%include osgAnimation/BasicAnimationManager
-//%include osgAnimation/Timeline
-//%include osgAnimation/TimelineAnimationManager
 
 // Vertex Influence stuff
 %template(VertexIndexWeight)               std::pair<int, float>;
@@ -140,6 +137,16 @@ typedef osgAnimation::TemplateKeyframeContainer<osg::Matrixf>                   
 
 // Bone Map Stuff
 %template(BoneMap)                         std::map< std::string, osg::ref_ptr<osgAnimation::Bone> >;
+
+%include osgAnimation/RigTransform
+%include osgAnimation/RigTransformHardware
+%include osgAnimation/RigTransformSoftware
+%include osgAnimation/RigGeometry
+%include osgAnimation/LinkVisitor
+%include osgAnimation/AnimationManagerBase
+%include osgAnimation/BasicAnimationManager
+//%include osgAnimation/Timeline
+//%include osgAnimation/TimelineAnimationManager
 
 // Quat Keyframe Stuff
 %template(vectorQuatKeyframe)              std::vector< QuatKeyframe >;

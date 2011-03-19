@@ -35,21 +35,36 @@
 %include osgGA/Version
 %include osgGA/GUIActionAdapter
 %include osgGA/GUIEventAdapter
-%include <osgGA/EventQueue>
+%include osgGA/EventQueue
 // %include osgGA/GUIEventHandlerVisitor
 %include osgGA/GUIEventHandler
 %include osgGA/EventVisitor
 %include osgGA/FlightManipulator
 // %include osgGA/SetSceneViewVisitor
 %include osgGA/CameraManipulator
+
+
+%{
+   typedef osgGA::CameraManipulator::CoordinateFrameCallback CoordinateFrameCallback;
+%}
+
+struct CoordinateFrameCallback : public virtual osg::Referenced
+{
+    virtual osg::CoordinateFrame getCoordinateFrame(const osg::Vec3d& position) const = 0;
+};
+
+
+%include osgGA/CameraViewSwitchManipulator
 %include osgGA/KeySwitchMatrixManipulator
+%include osgGA/StateSetManipulator
+%include osgGA/OrbitManipulator
+%include osgGA/SphericalManipulator
 %include osgGA/StandardManipulator
 %include osgGA/OrbitManipulator
-%include osgGA/StateSetManipulator
 %include osgGA/TerrainManipulator
 %include osgGA/TrackballManipulator
 %include osgGA/UFOManipulator
-%include osgGA/FlightManipulator
+%include osgGA/FirstPersonManipulator
 %include osgGA/AnimationPathManipulator
 %include osgGA/DriveManipulator
 %include osgGA/NodeTrackerManipulator
