@@ -101,6 +101,7 @@
 #include <osg/BoundingBox>
 #include <osg/Node>
 #include <osg/Group>
+#include <osg/Sequence>
 #include <osg/Switch>
 #include <osg/LOD>
 #include <osg/PagedLOD>
@@ -241,7 +242,7 @@ VECIGNOREHELPER(Quat)
 %rename(get_blool) osg::Uniform::get( bool&  ) const;
 %rename(get_vec2) osg::Uniform::get( osg::Vec2&  ) const;
 %rename(get_vec3) osg::Uniform::get( osg::Vec3&  ) const;
-%rename(get_ve4) osg::Uniform::get( osg::Vec4&  ) const;
+%rename(get_vec4) osg::Uniform::get( osg::Vec4&  ) const;
 %rename(get_m2) osg::Uniform::get( osg::Matrix2&  ) const;
 %rename(get_m3) osg::Uniform::get( osg::Matrix3& ) const;
 %rename(get_mf) osg::Uniform::get( osg::Matrixf&  ) const;
@@ -252,6 +253,25 @@ VECIGNOREHELPER(Quat)
 %rename(get_bool2) osg::Uniform::get( bool& , bool&  ) const;
 %rename(get_bool3) osg::Uniform::get( bool& , bool& , bool&  ) const;
 %rename(get_bool4) osg::Uniform::get( bool& , bool& , bool& , bool&  ) const;
+
+// rename for set
+%rename(set_float) osg::Uniform::set( float );
+%rename(set_int) osg::Uniform::set( int  );
+%rename(set_bool) osg::Uniform::set( bool  );
+%rename(set_vec2) osg::Uniform::set( const osg::Vec2&  );
+%rename(set_vec3) osg::Uniform::set( const osg::Vec3&  );
+%rename(set_vec4) osg::Uniform::set( const osg::Vec4&  );
+%rename(set_m2) osg::Uniform::set( const osg::Matrix2&  );
+%rename(set_m3) osg::Uniform::set( const osg::Matrix3& );
+%rename(set_m4f) osg::Uniform::set( const osg::Matrixf&  );
+%rename(set_m4d) osg::Uniform::set( const osg::Matrixd&  );
+%rename(set_int2) osg::Uniform::set( int , int  );
+%rename(set_int3) osg::Uniform::set( int , int , int  );
+%rename(set_int4) osg::Uniform::set( int , int , int , int  );
+%rename(set_bool2) osg::Uniform::set( bool , bool  );
+%rename(set_bool3) osg::Uniform::set( bool , bool , bool  );
+%rename(set_bool4) osg::Uniform::set( bool , bool , bool , bool  );
+
 
 // correct override for osg::Uniform::getElement
 %rename(get_int_float) osg::Uniform::getElement( unsigned int , float&  ) const;
@@ -639,7 +659,11 @@ namespace osg {
 %include osg/PolygonOffset
 %include osg/LineWidth
 %include osg/LineStipple
+%include osg/LogicOp
 %include osg/Material
+%ignore osg::Stencil::Extensions;
+%ignore osg::Stencil::getExtensions;
+%ignore osg::Stencil::setExtensions; 
 %include osg/Stencil
 %include osg/Depth
 
@@ -656,11 +680,17 @@ namespace osg {
 %include osg/BlendColor
 
 %include osg/BufferObject
+%ignore osg::BufferObject;
+%{
+typedef osg::BufferData::ModifiedCallback ModifiedCallback;
+%}
+//%ignore osg::BufferObject::ModifiedCallback;
+
 %typemap(in) unsigned char * data {
     if (PyString_Check($input)) {
-        int len;
+        Py_ssize_t len;
         char *buf;
-        PyString_AsStringAndSize($input, &buf, (Py_ssize_t *)&len);
+        PyString_AsStringAndSize($input, &buf, &len);
         $1 = (unsigned char *)malloc(len);
         memcpy($1, buf, len);
     } else {
@@ -671,6 +701,7 @@ namespace osg {
 
 %include osg/Image
 %include osg/ImageStream
+%include osg/ImageSequence
 
 %extend osg::Image {
 	virtual osg::ImageStream* asImageStream() {return dynamic_cast<osg::ImageStream*>($self);}
@@ -714,11 +745,34 @@ so an explicit $self is needed for all member access, see http://www.swig.org/Do
 %ignore osg::Shader::Extensions; 
 %ignore osg::Shader::getExtensions; 
 %ignore osg::Shader::setExtensions; 
+%ignore osg::Shader::getPCS;
 %include osg/Shader
+
+%{
+    typedef osg::Shader::PerContextShader PerContextShader ;
+%}
 
 %ignore osg::Program::Extensions; 
 %ignore osg::Program::getExtensions; 
 %ignore osg::Program::setExtensions; 
+
+%ignore osg::Program::UniformBlockInfo;
+%ignore osg::Program::getUniformBlocks;
+
+//struct UniformBlockInfo
+//{
+//    UniformBlockInfo() : _index(GL_INVALID_INDEX), _size(0) {}
+//    UniformBlockInfo(GLuint index, GLsizei size)
+//        : _index(index), _size(size)
+//    {
+//    }
+//    GLuint _index;
+//    GLsizei _size;
+//};
+//%{
+//   typedef osg::Program::UniformBlockInfo UniformBlockInfo;
+//%}
+
 %include osg/Program
 
 %extend osg::Program { 
@@ -908,6 +962,7 @@ DRAWELEMENTSHELPER ( DrawElementsUShort, GLushort);
 %include osg/Geode
 %include osg/Billboard
 %include osg/Group
+%include osg/Sequence
 %include osg/Switch
 
 // Fix problems with center and radius methods in LOD, PagedLOD, and ProxyNode.
@@ -954,6 +1009,17 @@ LODHELPER(ProxyNode)
 %include osg/BoundingBox
 %include osg/BoundingSphere
 %include osg/BoundsChecking
+
+%{
+   typedef osg::BufferData::ModifiedCallback ModifiedCallback;
+%}
+
+struct ModifiedCallback : public virtual osg::Object
+{
+    ModifiedCallback() {}
+    virtual void modified(osg::BufferData* /*bufferData*/) const {}
+};
+
 %include osg/BufferObject
 
 %include osg/MatrixTransform

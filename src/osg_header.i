@@ -23,6 +23,7 @@
 #include <osg/Point>
 #include <osg/LineWidth>
 #include <osg/LineStipple>
+#include <osg/LogicOp>
 #include <osg/Material>
 #include <osg/Depth>
 #include <osg/Stencil>
@@ -39,6 +40,7 @@
 #include <osg/Node>
 #include <osg/NodeCallback>
 #include <osg/Group>
+#include <osg/Sequence>
 #include <osg/Switch>
 #include <osg/Transform>
 #include <osg/PositionAttitudeTransform>
@@ -50,6 +52,7 @@
 #include <osg/BufferObject>
 #include <osg/Image>
 #include <osg/ImageStream>
+#include <osg/ImageSequence>
 
 #include <osg/Light>
 #include <osg/LightModel>
@@ -96,4 +99,5 @@ typedef osg::GraphicsContext::Traits Traits;
 typedef osg::GraphicsContext::WindowingSystemInterface WindowingSystemInterface;
 typedef osg::Drawable::UpdateCallback UpdateCallback;
 typedef osg::Drawable::AttributeFunctor AttributeFunctor;
+typedef osg::BufferData::ModifiedCallback ModifiedCallback;
 %}
